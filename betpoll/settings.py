@@ -1,3 +1,4 @@
+import pymysql
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -60,6 +61,8 @@ TEMPLATES = [
 WSGI_APPLICATION = 'betpoll.wsgi.application'
 
 
+pymysql.install_as_MySQLdb()
+
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 if os.getenv('GAE_APPLICATION', None):
@@ -68,10 +71,10 @@ if os.getenv('GAE_APPLICATION', None):
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.mysql',
-            'HOST': '/cloudsql/betpoll:asia-south1:betpoll-db',
+            'HOST': '/cloudsql/bet-poll:asia-south1:bet-poll-db',
             'USER': 'root',
             'PASSWORD': 'aman123456',
-            'NAME': 'betpoll-db',
+            'NAME': 'bet-poll-db',
         }
     }
 
