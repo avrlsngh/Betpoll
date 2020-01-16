@@ -1,6 +1,5 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-
 from django.contrib import admin
+from .models import Match, Chat
 
-# Register your models here.
+admin.site.register(Match)
+admin.site.register(Chat)
