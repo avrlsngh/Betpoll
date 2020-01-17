@@ -14,7 +14,7 @@ SECRET_KEY = 'rfu6vq8=-3iii)8d&_q&&@q1xnn41jt0lidc9@6$cgw3hyp=^%'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['betpollweb.appspot.com', '127.0.0.1']
 
 
 # Application definition
@@ -45,7 +45,7 @@ ROOT_URLCONF = 'betpoll.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': ['templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -71,18 +71,22 @@ if os.getenv('GAE_APPLICATION', None):
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.mysql',
-            'HOST': '/cloudsql/bet-poll:asia-south1:bet-poll-db',
-            'USER': 'root',
+            'HOST': '/cloudsql/betpollweb:asia-south1:betpolldb',
+            'USER': 'avrl',
             'PASSWORD': 'aman123456',
-            'NAME': 'bet-poll-db',
+            'NAME': 'betpoll',
         }
     }
 
 else:
     DATABASES = {
         'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+            'ENGINE': 'django.db.backends.mysql',
+            'HOST': '127.0.0.1',
+            'PORT': '3306',
+            'USER': 'avrl',
+            'PASSWORD': 'aman123456',
+            'NAME': 'betpoll'
         }
     }
 
