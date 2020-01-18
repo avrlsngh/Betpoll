@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% load static from staticfiles %}
+
+{% block page_title %}
+<h3>Login Below</h3>
+{% endblock %}
+
+{% block content %}
+<script>
+    window.onload = function () {
+        document.getElementById('id_username').setAttribute('placeholder', 'Enter your Username');
+        document.getElementById('id_password').setAttribute('placeholder', 'Password');
+    }
+</script>
+<div class="row text-center">
+    <div class="col align-self-center">
+        <img src="{% static 'admin/img/login.svg' %}" alt="" id="login_illust">
+    </div>
+</div>
+<form action="{% url 'accounts:login' %}" class="site-form d-flex flex-column align-items-center" method="post">
+    {% csrf_token %}
+    {{ form }}
+    <input type="submit" value="Login">
+</form>
+{% endblock %}

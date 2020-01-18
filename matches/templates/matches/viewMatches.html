@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% load static from staticfiles %}
+
+{% block title %}
+Matches List | BetPoll
+{% endblock %}
+
+{% block page_title %} Matches {% endblock %}
+
+{% block content %}
+<div id="matches" style="display: grid;
+grid-template-columns: repeat(3, 1fr);
+grid-gap: 20px;
+grid-template-rows: minmax(10px, auto);
+padding: 20px;">
+    <div class="card">
+        <div class="card-body shadow-lg bg-white rounded">
+            <h3 class="card-title">FootBall Match</h3>
+            <p class="card-text"><small class="text-muted">today</small></p>
+            <h5 class="card-text">this is a football match</h5>
+            <p class="card-text"><i class="fa fa-user" aria-hidden="true"></i>&nbsp;admin</p>
+            <a href="/connect/{{post.id}}" style="color: #7B6FB0;">View full post <i class="fa fa-arrow-right"></i></a>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-body shadow-lg bg-white rounded">
+            <h3 class="card-title">FootBall Match</h3>
+            <p class="card-text"><small class="text-muted">today</small></p>
+            <h5 class="card-text">this is a football match</h5>
+            <p class="card-text"><i class="fa fa-user" aria-hidden="true"></i>&nbsp;admin</p>
+            <a href="/connect/{{post.id}}" style="color: #7B6FB0;">View full post <i class="fa fa-arrow-right"></i></a>
+        </div>
+    </div>
+</div>
+{% endblock %}

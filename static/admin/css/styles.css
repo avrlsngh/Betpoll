@@ -1,0 +1,8 @@
+
+#matches{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-gap: 20px;
+    grid-template-rows: minmax(10px, auto);
+    padding: 20px;
+}
