@@ -2,7 +2,7 @@
 {% load static from staticfiles %}
 
 {% block page_title %}
-<h3>Login Below</h3>
+Login Below
 {% endblock %}
 
 {% block content %}
@@ -22,4 +22,9 @@
     {{ form }}
     <input type="submit" value="Login">
 </form>
+{% endblock %}
+
+{% block auth_button %}
+<a class="btn" style="background-color: #d18eed; color: white;" role="button" href="{% url 'accounts:signup' %}">Create
+    Account</a>
 {% endblock %}

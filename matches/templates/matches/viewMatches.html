@@ -5,32 +5,38 @@
 Matches List | BetPoll
 {% endblock %}
 
-{% block page_title %} Matches {% endblock %}
+{% block page_title %}Matches{% endblock %}
 
 {% block content %}
-<div id="matches" style="display: grid;
-grid-template-columns: repeat(3, 1fr);
-grid-gap: 20px;
-grid-template-rows: minmax(10px, auto);
-padding: 20px;">
+<div id="matches">
+    {% for match in matches %}
     <div class="card">
         <div class="card-body shadow-lg bg-white rounded">
-            <h3 class="card-title">FootBall Match</h3>
-            <p class="card-text"><small class="text-muted">today</small></p>
-            <h5 class="card-text">this is a football match</h5>
-            <p class="card-text"><i class="fa fa-user" aria-hidden="true"></i>&nbsp;admin</p>
-            <a href="/connect/{{post.id}}" style="color: #7B6FB0;">View full post <i class="fa fa-arrow-right"></i></a>
+            <h2 class="card-title m-0">{{match.game}} Match</h2>
+            <p class="card-text"><small class="text-muted" id="created_date">{{match.created_at}}</small></p>
+            <h5 class="card-text">{{match.match_desc}}</h5>
+            <p class="card-text text-muted"><i class="fa fa-user" aria-hidden="true"></i>&nbsp;{{match.user}}</p>
+            <a href="/matches/{{match.id}}" style="color: #7B6FB0;">View match<i class="fa fa-arrow-right"></i></a>
         </div>
     </div>
-
-    <div class="card">
-        <div class="card-body shadow-lg bg-white rounded">
-            <h3 class="card-title">FootBall Match</h3>
-            <p class="card-text"><small class="text-muted">today</small></p>
-            <h5 class="card-text">this is a football match</h5>
-            <p class="card-text"><i class="fa fa-user" aria-hidden="true"></i>&nbsp;admin</p>
-            <a href="/connect/{{post.id}}" style="color: #7B6FB0;">View full post <i class="fa fa-arrow-right"></i></a>
-        </div>
-    </div>
+    {% endfor %}
 </div>
+{% endblock %}
+
+{% block auth_button %}
+
+<form action="{% url 'accounts:logout' %}" method="post">
+    {% csrf_token %}
+    <button class="btn red lighten-1 ml-auto" type="submit" id="logout_btn">Logout</button>
+</form>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    window.onload = () => {
+        let date = document.getElementById('created_at').innerHTML;
+        date = moment(date);
+        document.getElementById('created_at').innerHTML = date.fromNow();
+    }
+</script>
 {% endblock %}

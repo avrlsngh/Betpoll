@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% load static from staticfiles %}
+
+{% block page_title %}
+Create Account
+{% endblock %}
+
+{% block content %}
+<script>
+    window.onload = function () {
+        document.getElementById('id_username').setAttribute('placeholder', 'Enter a Username');
+        document.getElementById('id_password1').setAttribute('placeholder', 'Password');
+        document.getElementById('id_password2').setAttribute('placeholder', 'Confirm Password');
+    }
+</script>
+
+<div class="row text-center">
+    <div class="col align-self-center">
+        <img src="{% static 'admin/img/signup.svg' %}" alt="" id="signup_illust">
+    </div>
+</div>
+
+<form action="/accounts/signup/" method="post" class="site-form mt-3 h-100 text-center">
+    {% csrf_token %}
+    {{ form }}
+    <input type="submit" value="Signup">
+</form>
+{% endblock %}
+
+{% block auth_button %}
+<a class="btn" style="background-color: #d18eed; color: white;" role="button"
+    href="{% url 'accounts:login' %}">Login</a>
+{% endblock %}

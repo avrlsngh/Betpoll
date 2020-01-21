@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import redirect
 
 def homepage(request):
-    return render(request, 'homepage.html')
+    return redirect('matches:viewMatches')

@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% load static from staticfiles %}
+
+{% block title %}
+Add Match | BetPoll
+{% endblock %}
+
+{% block page_title %} Add Match {% endblock %}
+
+{% block content %}
+<div class="form-container d-flex justify-content-center align-items-center">
+    <form action="{% url 'matches:addMatch' %}" method="POST" autocomplete="off" id="addMatchForm">
+        {% csrf_token %}
+        {{ form }}
+        <input type="submit" value="ADD" style="float: right;">
+    </form>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    window.onload = () => {
+        $('#id_match_desc').attr('placeholder', 'Small description of the match');
+        $('#id_player_1').attr('placeholder', 'Name of player 1');
+        $('#id_player_2').attr('placeholder', 'Name of player 2');
+        $('#id_match_start_time').attr('placeholder', 'Start time of the match');
+        $('#id_match_start_time').timepicker();
+        $('#id_match_end_time').attr('placeholder', 'End time of the match');
+        $('#id_match_end_time').timepicker();
+        $('#id_match_coordinators').attr('placeholder', 'Coordinator(s) of the match');
+        $('#id_match_round').attr('placeholder', 'Current round of the match');
+    }
+</script>
+{% endblock %}

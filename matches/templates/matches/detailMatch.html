@@ -1,0 +1,240 @@
+{% extends 'base.html' %}
+{% load static from staticfiles %}
+
+{% block title %}
+{{match.game}} Match | BetPoll
+{% endblock %}
+
+{% block page_title %} {{match.game}} Match {% endblock %}
+
+{% block content %}
+
+
+<div class="container m-0 w-100">
+    <div class="row">
+        <div class="col text-center">
+            <h3 class="mt-0">Who will win this match?</h3>
+            <hr class="w-50 mb-0">
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col text-center">
+            <h4 class="m-0">{{match.player_1}}</h4>
+        </div>
+        <div class="col text-center d-flex align-items-center justify-content-center">
+            <h5 class="m-0 text-muted">V/S</h5>
+        </div>
+        <div class="col text-center">
+            <h4 class="m-0">{{match.player_2}}</h4>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col text-center">
+            {% if match.player_1_votes != None %}
+            <h6 class="text-muted m-0" id="player_1_votes">{{match.player_1_votes}} votes</h6>
+            {% endif %}
+        </div>
+        <div class="col"></div>
+        <div class="col text-center">
+            {% if match.player_2_votes != None %}
+            <h6 class="text-muted m-0" id="player_2_votes">{{match.player_2_votes}} votes</h6>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col text-center">
+            {% if vote_side == 0 %}
+            <input type="button" value="Voted" class="btn btn-dark" style="background-color: #d18eed;" disabled>
+            {% elif vote_side == 1 %}
+            <input type="button" value="Vote" class="btn btn-dark" style="background-color: #d18eed;" disabled>
+            {% else %}
+            <input type="button" value="Vote" class="btn btn-dark" style="background-color: #d18eed;" id="vote_player_1"
+                onclick="vote(0, '#vote_player_1')">
+            {% endif %}
+        </div>
+        <div class="col"></div>
+        <div class="col text-center">
+            {% if vote_side == 1 %}
+            <input type="button" value="Voted" class="btn btn-dark" style="background-color: #d18eed;" disabled>
+            {% elif vote_side == 0 %}
+            <input type="button" value="Vote" class="btn btn-dark" style="background-color: #d18eed;" disabled>
+            {% else %}
+            <input type="button" value="Vote" class="btn btn-dark" style="background-color: #d18eed;" id="vote_player_2"
+                onclick="vote(1, '#vote_player_2')">
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<div class="container m-0 w-100 mt-1">
+    <h5 class="m-0">Comments</h5>
+    <hr class="m-0">
+    <div id="comments_screen" style="overflow-y: scroll; height: 35vh;">
+        <div class="row">
+            <div class="col">
+                <h5 class="text-muted text-center"> It's feeling lonely here </h5>
+            </div>
+        </div>
+    </div>
+    <div class="row fixed-bottom m-0 mb-2 p-1">
+        <div class="col col-8">
+            <input type="text" placeholder="Add a public comment..." id="comment_text">
+        </div>
+        <div class="col d-flex align-items-center">
+            <input type="button" value="Comment" class="btn btn-dark" style="color: black; background-color: #d18eed;"
+                onclick="addComment()" id="comment_submit">
+        </div>
+    </div>
+    {% endblock %}
+
+    {% block scripts %}
+
+    {% csrf_token %}
+
+    <script>
+        // function to add votes to one of the sides
+        function vote(side, element_id) {
+            $("#vote_player_1").attr('disabled', true);
+            $("#vote_player_2").attr('disabled', true);
+            $(element_id).attr("value", "Voted");
+            const vote_side = side;
+            const match_id = window.location.href.split('/')[4];
+            const csrf_token = $("[name=csrfmiddlewaretoken]").val();
+            console.log(match_id);
+            $.ajax({
+                url: "{% url 'matches:voteMatch' %}",
+                type: "POST",
+                beforeSend: (request) => {
+                    request.setRequestHeader("X-CSRFToken", csrf_token);
+                    request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+                },
+                data: "vote_side=" + vote_side + "&match_id=" + match_id + "",
+                success: () => {
+                    console.log("Voted!");
+                    $.ajax({
+                        url: "{% url 'matches:detailMatch' match.id %}",
+                        type: 'POST',
+                        beforeSend: (request) => {
+                            request.setRequestHeader("X-CSRFToken", csrf_token);
+                            request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+                        },
+                        success: (msg) => {
+                            $("#player_1_votes").html(msg.player_1_votes + " votes");
+                            $("#player_2_votes").html(msg.player_2_votes + " votes");
+                        }
+                    })
+                }
+            })
+        }
+
+        function getComments(count, isLoadMore) {
+            const match_id = window.location.href.split('/')[4];
+            const csrf_token = $("[name=csrfmiddlewaretoken]").val();
+            $.ajax({
+                url: "{% url 'matches:addComment' 1 %}",
+                type: "POST",
+                beforeSend: (request) => {
+                    request.setRequestHeader("X-CSRFToken", csrf_token);
+                    request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+                },
+                data: "match_id=" + match_id + "&count=" + count + "",
+                success: (msg) => {
+                    if (typeof msg == String) {
+                        msg = JSON.parse(msg);
+                    }
+                    if (msg.status !== 'No comment found for this match') {
+                        $("#comment_submit").attr('disabled', false);
+                        $("#comment_text").val('');
+                        $("#comments_screen").html("");
+                        for (let i = 1; i < msg.length; i++) {
+                            // console.log(msg[i].text, msg[i].created_at, msg[i].userr);
+                            console.log(msg[i]);
+                            // to store the total comments for the match
+                            $("#comments_screen").append(
+                                '<div class="row">' +
+                                '<div class="col">' +
+                                '<h6 class="m-0">' + msg[i].text + '</h6>' +
+                                '<p><small class="text-muted">' + moment(msg[i].created_at).fromNow() + ' • ' + msg[i].user + '</small></p>' +
+                                '</div>' +
+                                '</div>'
+                            )
+                        }
+                        if (isLoadMore && count < msg[0]) {
+                            $("#comments_screen").append(
+                                '<div class="row">' +
+                                '<div class="col text-center">' +
+                                '<button class="btn grey" onclick="loadMoreComments()">Load more</button>' +
+                                '</div>' +
+                                '</div>'
+                            )
+                        }
+                    }
+                }
+            })
+        }
+
+        // function to add comment to one of the sides
+        function addComment() {
+            $("#comment_submit").attr('disabled', true);
+            const text = document.getElementById("comment_text").value;
+            let count = window.sessionStorage.getItem("comment_count");
+            if (text !== "") {
+                const match_id = window.location.href.split('/')[4];
+                const csrf_token = $("[name=csrfmiddlewaretoken]").val();
+                $.ajax({
+                    url: "{% url 'matches:addComment' 0 %}",
+                    type: "POST",
+                    beforeSend: (request) => {
+                        request.setRequestHeader("X-CSRFToken", csrf_token);
+                        request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+                    },
+                    data: "match_id=" + match_id + "&text=" + text + "",
+                    success: function (msg) {
+                        console.log(msg);
+                        // fetch comments after adding one
+                        getComments(count, true);
+                    },
+                })
+            } else {
+                alert('Empty comments are not allowed');
+            }
+        }
+
+        // to load more comments
+        function loadMoreComments() {
+            let count = window.sessionStorage.getItem("comment_count");
+            $("comment_screen").append(
+                '<div class="row">' +
+                '<div class="col text-center">' +
+                '<div class="spinner-border" role="status">' +
+                '<span class="sr-only">Loading...</span>' +
+                '</div>' +
+                '</div>' +
+                '</div>'
+            );
+            count += 10;
+            window.sessionStorage.setItem("comment_count", count);
+            getComments(count, true);
+        }
+
+        // to fetch comments every 3 secs, setInterval is used
+        window.onload = () => {
+            window.sessionStorage.setItem("comment_count", 10);
+            // setInerval on ajax reqeust for every 3 sec to pull comments from database
+            const match_id = window.location.href.split('/')[4];
+            const csrf_token = $("[name=csrfmiddlewaretoken]").val();
+            let count = window.sessionStorage.getItem("comment_count");
+            getComments(count, true);
+        }
+//         let temp = window.sessionStorage.getItem("comment_count");
+
+// // if the count is less than the number of total comments
+// if (temp < msg[0]) {
+//     temp += 10;
+//     window.sessionStorage.setItem("comment_count", temp);
+// }
+    </script>
+    {% endblock %}

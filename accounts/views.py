@@ -1,12 +1,16 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth import login, logout
+from matches.models import UserRight
 
 def signup_view(request):
     if request.method == 'POST':
         form = UserCreationForm(request.POST)
+        user_right = UserRight()
         if form.is_valid():
             user = form.save()
+            user_right.user = user
+            user_right.save()
             login(request, user)
             # log the user in
             return redirect('matches:viewMatches')
@@ -28,4 +32,4 @@ def login_view(request):
 def logout_view(request):
     if request.method == 'POST':
         logout(request)
-        return redirect('homepage')
+        return redirect('accounts:login')
