@@ -24,19 +24,20 @@ Matches List | BetPoll
 {% endblock %}
 
 {% block auth_button %}
-
-<form action="{% url 'accounts:logout' %}" method="post">
-    {% csrf_token %}
-    <button class="btn red lighten-1 ml-auto" type="submit" id="logout_btn">Logout</button>
-</form>
+<div class="d-flex justify-content-around align-items-center">
+    <button class="btn mr-2 voted_matches_button" style="background-color: #d18eed"
+        onclick="window.open('/matches/votedmatches', '_self')">
+        Voted Matches
+    </button>
+    <form action="{% url 'accounts:logout' %}" method="post">
+        {% csrf_token %}
+        <button class="btn red lighten-1 logout_button" type="submit" id="logout_btn">Logout</button>
+    </form>
+</div>
 {% endblock %}
 
 {% block scripts %}
 <script>
-    window.onload = () => {
-        let date = document.getElementById('created_at').innerHTML;
-        date = moment(date);
-        document.getElementById('created_at').innerHTML = date.fromNow();
-    }
+
 </script>
 {% endblock %}

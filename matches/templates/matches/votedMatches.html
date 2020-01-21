@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% load static from staticfiles %}
+
+{% block title %}
+Voted Match | BetPoll
+{% endblock %}
+
+{% block page_title %} Voted Matches {% endblock %}
+
+{% block content %}
+<div id="matches">
+
+</div>
+{% endblock %}
+
+{% block auth_button %}
+<div class="d-flex justify-content-around align-items-center">
+    <button class="btn mr-2 voted_matches_button" style="background-color: #d18eed"
+        onclick="window.open('/matches/votedmatches', '_self')">
+        Voted Matches
+    </button>
+    <form action="{% url 'accounts:logout' %}" method="post">
+        {% csrf_token %}
+        <button class="btn red lighten-1 logout_button" type="submit" id="logout_btn">Logout</button>
+    </form>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{% csrf_token %}
+<script>
+    window.onload = () => {
+        const csrf_token = $("[name=csrfmiddlewaretoken]").val();
+        $.ajax({
+            url: "{% url 'matches:votedMatches' %}",
+            type: 'POST',
+            beforeSend: (request) => {
+                request.setRequestHeader("X-CSRFToken", csrf_token);
+                request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+            },
+            success: (msg) => {
+
+                msg = JSON.parse(msg);
+                for (let i = 0; i < msg.length; i++) {
+                    $("#matches").append(
+                        '<div class="card">' +
+                        '<div class="card-body shadow-lg bg-white rounded">' +
+                        '<h2 class="card-title m-0">' + msg[i].fields.game + ' Match</h2>' +
+                        '<p class="card-text"><small class="text-muted" id="created_date">' + moment(msg[i].fields.created_at).fromNow() + '</small></p>' +
+                        '<h5 class="card-text">' + msg[i].fields.match_desc + '</h5>' +
+                        '<a href="/matches/' + msg[i].pk + '" style="color: #7B6FB0;">View match<i class="fa fa-arrow-right"></i></a>' +
+                        '</div>' +
+                        '</div>'
+                    )
+                }
+            }
+        })
+    }
+</script>
+{% endblock %}

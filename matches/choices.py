@@ -5,7 +5,7 @@ GAME_CHOICES = [
     ('Table Tennis', 'Table Tennis'),
     ('Football', 'Football'),
     ('Cricket', 'Cricket'),
-    ('Tuf Of War', 'Tuf Of War'),
+    ('Tug Of War', 'Tug Of War'),
     ('Lan Gaming', 'Lan Gaming'),
     ('Hand Ball', 'Hand Ball'),
     ('Kho Kho', 'Kho Kho'),

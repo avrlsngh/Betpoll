@@ -21,6 +21,7 @@ class Match(models.Model):
     match_round = models.CharField(
         max_length=250, default=None, null=False, blank=False)
     match_desc = models.TextField(blank=True)
+    winning_side = models.IntegerField(default=None, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

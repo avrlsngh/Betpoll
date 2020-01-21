@@ -13,7 +13,7 @@
 <div class="container m-0 w-100">
     <div class="row">
         <div class="col text-center">
-            <h3 class="mt-0">Who will win this match?</h3>
+            <h3 class="mt-0 versus-heading">Who will win this match?</h3>
             <hr class="w-50 mb-0">
         </div>
     </div>
@@ -72,21 +72,34 @@
 <div class="container m-0 w-100 mt-1">
     <h5 class="m-0">Comments</h5>
     <hr class="m-0">
-    <div id="comments_screen" style="overflow-y: scroll; height: 35vh;">
+    <div class="row m-0 mb-2 p-1">
+        <div class="col col-8">
+            <input type="text" placeholder="Add a public comment..." id="comment_text">
+        </div>
+        <div class="col d-flex align-items-center comment_container">
+            <input type="button" value="Comment" class="btn btn-dark comment-button"
+                style="color: black; background-color: #d18eed;" onclick="addComment()" id="comment_submit">
+        </div>
+    </div>
+    <div id="comments_screen">
         <div class="row">
             <div class="col">
                 <h5 class="text-muted text-center"> It's feeling lonely here </h5>
             </div>
         </div>
     </div>
-    <div class="row fixed-bottom m-0 mb-2 p-1">
-        <div class="col col-8">
-            <input type="text" placeholder="Add a public comment..." id="comment_text">
-        </div>
-        <div class="col d-flex align-items-center">
-            <input type="button" value="Comment" class="btn btn-dark" style="color: black; background-color: #d18eed;"
-                onclick="addComment()" id="comment_submit">
-        </div>
+    {% endblock %}
+
+    {% block auth_button %}
+    <div class="d-flex justify-content-around align-items-center">
+        <button class="btn mr-2 voted_matches_button" style="background-color: #d18eed"
+            onclick="window.open('/matches/votedmatches', '_self')">
+            Voted Matches
+        </button>
+        <form action="{% url 'accounts:logout' %}" method="post">
+            {% csrf_token %}
+            <button class="btn red lighten-1 logout_button" type="submit" id="logout_btn">Logout</button>
+        </form>
     </div>
     {% endblock %}
 
@@ -142,10 +155,9 @@
                 },
                 data: "match_id=" + match_id + "&count=" + count + "",
                 success: (msg) => {
-                    if (typeof msg == String) {
-                        msg = JSON.parse(msg);
-                    }
-                    if (msg.status !== 'No comment found for this match') {
+                    console.log(typeof msg);
+
+                    if (typeof msg !== 'string') {
                         $("#comment_submit").attr('disabled', false);
                         $("#comment_text").val('');
                         $("#comments_screen").html("");

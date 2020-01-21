@@ -54,6 +54,12 @@ input[type='submit']{
     width: 120px;
 }
 
+.brand-text{
+    color: #d18eed; 
+    font-weight: bolder; 
+    font-size: 32px;
+}
+
 select{
     display: block;
     margin-bottom: 10px;
@@ -68,7 +74,7 @@ select{
 
 #signup_illust{
     height: 20%;
-    width: 40%;
+    width: 30%;
 }
 
 /* Designing the time picker */
@@ -111,5 +117,60 @@ input[type='text']{
 
 #comments_screen{
     overflow-y: scroll; 
-    height: 35vh;
+    height: 50%;
+}
+
+@media only screen and (max-width: 480px) {
+    #matches{
+        grid-template-columns: repeat(1, 1fr);
+        grid-gap: 5px;
+        padding: 10px;
+    }
+
+    .brand-text{ 
+        font-size: 24px;
+        margin: 0;
+    }
+    .page-title{
+        font-size: 20px;
+        margin: 0;
+    }
+    .voted_matches_button{
+        font-size: 10px;
+        padding-left: 2px;
+        padding-right: 2px;
+    }
+    .logout_button{
+        font-size: 10px;
+        padding-left: 2px;
+        padding-right: 2px;
+    }
+    #comments_screen{
+        height: 30%;
+    }
+    .header-nav{
+        padding: 0;
+    }
+    h3{
+        font-size: 2.2rem;
+    }
+    h4{
+        font-size: 1.5rem;
+    }
+    .comment-button{
+        padding: 0px 2px;
+    }
+    .comment_container{
+        padding: 0 !important;
+    }
+    #login_illust{
+        height: 60%;
+        width: 60%;
+        margin-bottom: 15px;
+        margin-top: 20px;
+    }
+    #signup_illust{
+        width: 60%;
+    }
+
 }

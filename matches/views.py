@@ -4,11 +4,14 @@ from .models import UserRight, Match, Votes, Chat
 from . import forms
 from django.http import JsonResponse
 import json
+from django.core import serializers
+from django.http import HttpResponse
 
 @login_required(login_url="/accounts/login")
 def viewMatches(request):
     is_admin = UserRight.objects.get(user = request.user).is_admin
     match_list = Match.objects.all().order_by('created_at')
+    print(type(match_list))
     return render(request, 'matches/viewMatches.html', {'is_admin': is_admin, 'matches': match_list})
 
 @login_required(login_url="/accounts/login")
@@ -49,7 +52,6 @@ def detailMatch(request, id):
 def voteMatch(request):
     if request.method == 'POST': 
         id = request.POST.get('match_id')
-        print(id)
         match = Match.objects.get(id=id)
         instance = Votes()
         instance.vote_side = request.POST.get('vote_side')
@@ -66,7 +68,7 @@ def voteMatch(request):
         return JsonResponse("{'status': 'vote added'}", safe=False)
 
 def addComment(request, status):
-    if request.method == 'POST' and int(status) == 0:          
+    if request.method == 'POST' and int(status) == 0:         
         id = request.POST.get('match_id')
         match = Match.objects.get(id=id)
         user = request.user
@@ -79,9 +81,9 @@ def addComment(request, status):
     
     elif request.method == 'POST' and int(status) == 1:
         print('entered')
-        id = request.POST.get('match_id')
+        id = int(request.POST.get('match_id'))
         match = Match.objects.get(id=id)
-        count = request.POST.get('count')
+        count = int(request.POST.get('count'))
         comments = []
         chats = Chat.objects.filter(match = match)
         comment_count = chats.count()
@@ -96,4 +98,19 @@ def addComment(request, status):
             return JsonResponse(comments, safe=False)
         return JsonResponse('{"status": "No comment found for this match"}', safe=False)
     return JsonResponse('{"status": "some error occured"}', safe=False)
+
+def votedMatches(request):
+    if request.method == 'POST':
+        user = request.user
+        user_votes = Votes.objects.filter(user = user)
+        matches = []
+        if user_votes:
+            for i in user_votes:
+                matches.append(i.match)
+            data = serializers.serialize('json', matches)
+        return JsonResponse(data, safe=False)
+    return render(request, 'matches/votedMatches.html')
+
+
+
 
